@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"time"
+	"flag"
 
 	vegeta "github.com/tsenart/vegeta/lib"
 )
@@ -10,8 +11,12 @@ import (
 
 
 func main() {
-	rate := uint64(100) // per second
-	duration := 4 * time.Second
+	// parsing flags
+	var totalTime = flag.Int("time", 4, "time to run tests")
+	flag.Parse() // parse the flag
+
+	rate := uint64(20) // per second
+	duration := *totalTime * time.Second
 	targeter := vegeta.NewStaticTargeter(vegeta.Target{
 		Method: "GET",
 		URL:    "http://unfuzzservice2.azurewebsites.net/api/categories/filter?q=led",
