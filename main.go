@@ -8,15 +8,25 @@ import (
 	vegeta "github.com/tsenart/vegeta/lib"
 )
 
+type AppConfig struct {
+	totalTime int
+	ratePerSecond int
+}
+
+var appConfig AppConfig
 
 
 func main() {
 	// parsing flags
 	var totalTime = flag.Int("time", 4, "time to run tests")
+	var ratePerSecond = flag.Int("rate", 100, "time to run tests")
 	flag.Parse() // parse the flag
 
-	rate := uint64(20) // per second
-	duration := *totalTime * time.Second
+	appConfig.totalTime = *totalTime
+	appConfig.ratePerSecond = *ratePerSecond
+
+	rate := uint64(appConfig.ratePerSecond) // per second
+	duration := time.Duration(appConfig.totalTime) * time.Second
 	targeter := vegeta.NewStaticTargeter(vegeta.Target{
 		Method: "GET",
 		URL:    "http://unfuzzservice2.azurewebsites.net/api/categories/filter?q=led",
